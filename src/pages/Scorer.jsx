@@ -1,25 +1,23 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function Scorer() {
+function Scorer()
+ {
   const naviagte = useNavigate();
   // setting data
   const Team1 = JSON.parse(localStorage.getItem("TeamA"));
   const Team2 = JSON.parse(localStorage.getItem("TeamB"));
-// using useStste to maneges states 
+
+
+  // using useState  to maneges states
   const [Score, setScore] = useState(0);
-
   const [score1, setScore1] = useState(0);
-
   const [score2, setScore2] = useState(0);
-
   const [firstBatsmanBatting, setFirstBatsmanBatting] = useState(true);
-
-  const [balls, setBalls] = useState(0);
+  const [balls, setBalls] = useState(0); 
   const [crun, setCRun] = useState([]);
 
-  //handleing current run 
-
+  //handleing current run   
   const handleCRun = (run) => {
     let runs = run;
     if (crun) {
@@ -29,21 +27,22 @@ function Scorer() {
     }
     setCRun(runs);
   };
-   localStorage.setItem("cRun",JSON.stringify(crun))
+  localStorage.setItem("cRun",JSON.stringify(crun))
   console.log(setCRun);
 
   // handle action in every ball
-
   function handleRunClick(runs) {
     if (runs === 0) {
       const currBalls = balls + 1;
       setBalls(currBalls);
-    } else if (runs === 1 || runs === 3 || runs === 5) {
+    }
+    else if (runs === 1 || runs === 3 || runs === 5) {
       if (firstBatsmanBatting) {
         const score = score1 + runs;
         setScore1(score);
         setFirstBatsmanBatting(false);
-      } else {
+      } 
+      else {
         const score = score2 + runs;
         setScore2(score);
         setFirstBatsmanBatting(true);
@@ -54,7 +53,8 @@ function Scorer() {
 
       const currBalls = balls + 1;
       setBalls(currBalls);
-    } else if (runs === 2 || runs === 4 || runs === 6) {
+    }
+    else if (runs === 2 || runs === 4 || runs === 6) {
       if (firstBatsmanBatting) {
         let score = score1 + runs;
         setScore1(score);
@@ -63,62 +63,75 @@ function Scorer() {
         setScore2(score);
       }
       let currScore = Score + runs;
+
       setScore(currScore);
 
       const currBalls = balls + 1;
       setBalls(currBalls);
-    } else if (runs === "wideBall" || runs === "noBall") {
+    } 
+    else if (runs === "wideBall" || runs === "noBall") {
       let currScore = Score + 1;
       setScore(currScore);
+      // const currBalls = balls + 1;
+      // setBalls(currBalls);
+    } 
+    else if (runs === "Out") {
       const currBalls = balls + 1;
       setBalls(currBalls);
-    } else if (runs === "Out") {
-      const currBalls = balls + 1;
-      setBalls(currBalls);
-    }
+    } 
   }
+
+  console.log(firstBatsmanBatting);
   //console.log(crun);
-// getting total score
+  // getting total score
   const currScore = Score;
   localStorage.setItem("score", JSON.stringify(currScore));
-
   let cOvers = Math.floor(balls / 6);
-
   let cBalls = balls % 6;
 
-  // const currOvers =
+  // const currOvers 
   localStorage.setItem("overs", JSON.stringify(cOvers));
   localStorage.setItem("Balls", JSON.stringify(cBalls));
 
   // handeling undo button
-
   const handleUndo= (runs)=>{
     if(firstBatsmanBatting){
-        let lastindex = crun.length -1;
-        let score = score1- crun[lastindex]
-        let score1 = Score - crun[lastindex];
-        setScore1(score);
-        setScore(score1);
-        if (balls === 0) {
-          setBalls(0);
+        let lastindex = crun.length - 1 ;
+        let score1
+        if(crun.length === 1){
+            score1 = 0;
+        }else{
+            score1 = Score - crun[lastindex];
         }
+        let score = score1 - crun[lastindex]
+
+        setScore1(score1);
+        setScore(score1);
+        
         let cBall = balls-1
-        setBalls(cBall)
+        if (cBall === 0) {
+            setBalls(0);
+        } 
+        else {
+            setBalls(cBall)
+        }   
     }
     else{
-        let lastindex = crun.length - 1;
-        let score = score2 - crun[lastindex];
-        let score1 = Score - crun[lastindex];
+        let lastindex = crun.length - 1 ;
+        let score1 = Score - crun[lastindex] ;
+        let score = score2 - crun[lastindex] ;
+        
         setScore2(score);
         setScore(score1);
         if(balls === 0){
             setBalls(0);
         }
+
         let cBall = balls - 1;
         setBalls(cBall);
     }
   }
-
+  
   return (
     <>
       <div className="m-5 text-2xl font-semibold">Batting Team : TeamA</div>
@@ -132,8 +145,6 @@ function Scorer() {
           <p>Runs:{score2}</p>
         </div>
       </div>
-
-      {/* {First2batsman()} */}
 
       <div className="text-xl font-semibold m-5 flex justify-evenly">
         <p>Bowler name : YoYo</p>
@@ -243,7 +254,14 @@ function Scorer() {
       </div>
 
       <div className="mx-[100px] text-2xl font-semibold flex justify-evenly">
-        <button className="bg-gray-200 p-2 rounded-xl" onClick={()=>{handleUndo()}}>Undo</button>
+        <button
+          className="bg-gray-200 p-2 rounded-xl"
+          onClick={() => {
+            handleUndo();
+          }}
+        >
+          Undo
+        </button>
         <button
           className="bg-gray-200 p-2 rounded-xl"
           onClick={() => {
